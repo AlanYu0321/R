@@ -1,0 +1,284 @@
+---
+author: "Tsu-Hao, Yu"
+date: "Due Date 2/17"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Part I. Changing the author field and file name.
+
+#### (a) Change the `author:` field on the Rmd document 
+
+#### (b) Rename this file to "HW1_YourFirstInitialYourLastName.Rmd", (e.g. HW1_YDing.Rmd).
+
+<br>
+
+
+### Part II. Cars data (44 points)
+
+We'll look at data frame and plotting in much more detail in later classes.  For a previous of what's to come, here's a very basic example.
+
+For this example we'll use a very simple dataset.  The `cars` data comes with the default installation of R.  To see the first few rows of the data, just type `head(cars)`.
+
+```{r}
+head(cars)
+```
+
+#### (a) Do a summary for `cars`. What the min,max, mean and median values of `speed` and `dist`? (5 points)
+
+```{r}
+summary(cars)
+```
+
+> cars.speed
+<br>
+min:4.0
+<br>
+max:25.0
+<br>
+mean:15.4
+<br>
+median:15.0
+
+>cars.dist
+<br>
+min:2.0
+<br>
+max:120.0
+<br>
+mean:42.98
+<br>
+median:36.0
+
+#### (b) Calculate the variance and standard deviation of `speed` (5 points)
+
+```{r}
+var(cars$speed)
+sd(cars$speed)
+```
+
+> var:27.95918
+<br>
+sd:5.287644
+
+
+#### (c) Calculate the variance and standard deviation of `dist` (5 points)
+
+```{r}
+var(cars$dist)
+sd(cars$dist)
+```
+
+> var:664.0608
+<br>
+sd:25.76938
+
+#### (d) Calulate the average and standard deviation of `dist` when `speed`  is greater than 12 and less than 19. (5 points)
+
+```{r}
+dist_data <- subset(cars, speed > 12 & speed < 19)
+mean(dist_data$dist)
+sd(dist_data$dist)
+```
+
+> mean:44.7
+<br>
+sd:18.61833
+
+
+#### (e) Produce a histogram of `speed` with **10 bins**. Please illustrate your observation from the output. (6 points)
+
+```{r}
+hist(cars$speed, breaks = seq(4,25,l=11), main = "Histogram of Speed", xlab = "Speed", col = "blue")
+```
+
+> According to the histogram, Most car speed were around 10-20, and the car of speed 4-10 and 20-25 took pretty much the same amount.
+
+#### (f) Produce a histogram of `dist` with **20 bins**. Please illustrate your observation from the output. (6 points)
+
+```{r}
+hist(cars$dist, breaks = seq(2,120,l=21), main = "Histogram of Distance", xlab = "Distance", col = "green")
+```
+
+> According to the histogram, Most driver drove about 20-60, and then 60-120, the shortest distance were 0-20.
+
+#### (g) Use the `boxplot` function to create a boxplot of `speed`. Please illustrate your observation from the output. (6 points)
+
+```{r}
+boxplot(cars$speed, col = "lightblue")
+abline(h = min(cars$speed), col = "Blue")
+abline(h = max(cars$speed), col = "Yellow")
+abline(h = median(cars$speed), col = "Green")
+abline(h = quantile(cars$speed, c(0.25, 0.75)), col = "Red")
+```
+
+> The boxplot shows that the min is below 5, max is 25 and median is 15, there were no outliers exist.
+
+#### (h) Use the `boxplot` function to create a boxplot of `dist`. Please illustrate your observation from the output. (6 points)
+
+```{r}
+boxplot(cars$dist, col = "lightgreen")
+abline(h = min(cars$dist), col = "Blue")
+abline(h = max(cars$dist), col = "Yellow")
+abline(h = median(cars$dist), col = "Green")
+abline(h = quantile(cars$dist, c(0.25, 0.75)), col = "Red")
+```
+
+> The boxplot shows that the min is just above 0, max is 120 and median is 40, there were outliers exist.
+
+<br>
+
+### Part III. Random Variables (26 points)
+
+#### Question 1. Classify the following random variables as discrete or continuous (12 points):
+
+X: the number of automobile accidents per year in Illinois.
+
+> Discrete
+
+Y: the length of time to play 18 holes of golf.
+
+> Continuous
+
+M: the amount of milk produced yearly by a particular cow.
+
+> Continuous
+
+N: the number of eggs laid each month by a hen.
+
+> Discrete
+
+P: the number of building permits issued each month in a certain city.
+
+> Discrete
+
+Q: the weight of grain produced per acre.
+
+> Continuous
+
+#### Question 2: Multiple Choices (14 points):
+
+#### i) A discrete random variable
+
+A) Takes on only countable values
+
+B) Takes on any value in an interval
+
+C) Has a probability density function
+
+> A
+
+#### ii) A continuous random variable is different from a discrete random variable because:
+
+A) It can only take integer values
+
+B) It is described using a probability mass function (PMF)
+
+C) It can take an infinite number of values within a given range
+
+> C
+
+#### iii) If $X$ is a constant random variable, meaning $X=c$ for some constant $c$, what is $Var(X)$? 
+
+A) 0
+
+B) $c^2$
+
+C) $E[X]$
+
+D) $E[X^2]$
+
+> A
+
+#### iv) Which of the following statements about expectation is TRUE?
+
+A) $E[X]$ is always equal to the sample mean
+
+B) $E[X]$ can be estimated by the sample mean when the sample size is large
+	
+C) $E[X]$ is always equal to the variance of X
+
+D) $E[X]$ is always an integer
+
+> B
+
+#### v) What does a histogram represent?
+
+A) The distribution of a single variable
+	
+B) The cumulative frequency of data
+
+C) The median and quartiles of data
+
+> A
+
+#### vi) If a histogram is skewed to the right, what does it indicate? 
+
+A) The mean is greater than the median
+
+B) The median is greater than the mean
+
+C) The data is symmetric
+
+D) The data has no outliers
+
+> A
+
+#### vii) Which of the following is true about outliers in a boxplot?
+
+A) Outliers are always errors in the data
+
+B) Outliers are represented by dots or asterisks outside the whiskers
+	
+C) Outliers are included in the box
+
+D) Outliers are not shown in a boxplot
+
+> B
+
+### Part IV. Normal Distributions and Critial Values (30 points)
+
+#### Question 1: A soft-drink machine is regulated so that it discharges an average of 200 milliliters per cup. If the amount of drink is normally distributed with a standard deviation equal to 15 milliliters,
+
+#### (a) what fraction of the cups will contain more than 224 milliliters?  (5 points)
+
+**Hint**: You can use `pnorm` or `pnormGC`(need `tigerstats` packagee).
+
+```{r}
+# pnorm can give us the rate >= 224
+1 - pnorm(224, mean = 200, sd = 15)
+```
+
+#### (b) what is the probability that a cup contains between 191 and 209 milliliters? (5 points)
+
+```{r}
+pnorm(209, mean = 200, sd = 15) - pnorm(191, mean = 200, sd = 15)
+```
+
+#### (c) below what value do we get the smallest 25% of the drinks? (5 points)
+
+```{r}
+qnorm(0.25, mean = 200, sd = 15)
+```
+
+
+#### Question 2. Critical values with `qnorm` 
+
+#### (a) Please use `qnorm` to find the critical values $z_{0.025}$. (5 points)
+
+```{r}
+qnorm(0.975)
+```
+
+#### (b) Please use `qnorm` to find the critical values $z_{0.005}$. (5 points)
+
+```{r}
+qnorm(0.995)
+```
+
+#### (c) Which value is larger? Why? (5 points)
+
+> Type your answer here
+z_{0.005} is larger because it corresponds to a higher cumulative probability

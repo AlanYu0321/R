@@ -1,0 +1,61 @@
+---
+author: "Tsu-Hao, Yu"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Part I. Basic R Syntax (30 points)
+
+#### Question 1. Hello World! (5 points)
+
+Here's an R code chunk that prints the text 'Hello world!'.
+
+```{r}
+print("Hello world!")
+```
+
+#### Modify the code chunk below to print your name
+
+```{r}
+print("Tsu-Hao, Yu")
+```
+
+<br>
+
+#### Question 2. Play with Dataset (25 points)
+
+The following is a small data to store health information, where the unit for height is centimeters and weight is kilogram.
+
+```{r}
+BMI = data.frame(
+   gender = c("Male", "Male","Female"), 
+   height = c(152, 171.5, 165), 
+   weight = c(81,93,78),
+   Age = c(42,38,26)
+)
+print(BMI)
+```
+
+#### a) Please calculate BMI for each person and add that information to the dataframe and display the new dataframe. (10 points)
+
+**BMI Formula: Weight (kg)/Square of Height(meters)**
+
+```{r}
+BMI$bmi = BMI$weight / (BMI$height / 100)^2
+print(BMI)
+```
+
+#### b) Please display `gender` and `age` for the people with BMI great than 30. (10 points)
+
+```{r}
+print(BMI[BMI$bmi > 30, c("gender", "Age")])
+```
+
+#### c) Please display `gender` for the people with BMI great than 25 and age less than 30. (5 points)
+
+```{r}
+BMI[BMI$bmi > 25 & BMI$Age > 30, c("gender")]
+```

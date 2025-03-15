@@ -1,0 +1,145 @@
+---
+title: "In Class Exercise 4"
+author: "Tsu-Hao, Yu"
+date: "2025-02-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### In-class Exercise: `geom_bar()`
+
+Please use `barplot` and `geom_bar()` to investigate `clarity` attribute in `diamonds` data set.
+
+```{r}
+library(ggplot2)
+barplot(table(diamonds$clarity)) #regular way
+ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = clarity))
+```
+
+
+#### In-class Exercise: Investigate Two Categorical Variables
+
+1. Please use `geom_bar()` to investigate the relationship between `clarity` and `cut`.
+
+```{r}
+ggplot(data = diamonds, aes(x = clarity)) +
+  geom_bar(aes(fill = cut)) 
+ggplot(data = diamonds, aes(x = clarity)) +
+  geom_bar(aes(fill = cut), position = "fill")  #normalized the barplot
+ggplot(data = diamonds, aes(x = clarity)) +
+  geom_bar(aes(fill = cut), position = "fill") +
+   coord_flip() #normalized the barplot and make it horizontal
+```
+
+
+2. Please use `geom_count()` to investigate the relationship between `clarity` and `cut`.
+
+```{r}
+ggplot(data = diamonds) +
+  geom_count(mapping = aes(x = clarity, y = cut))
+```
+
+#### In-class Exercise: Investigate A Categorical and A Continuous Variable by `geom_histogram()`
+
+1. Please use `geom_histogram()` to investigate the relationship between `price` and `color`.
+
+```{r}
+ggplot(data = diamonds, aes(x = price)) +
+  geom_histogram(aes(fill = color), bins = 30, color = "black")  #have black lines around each bar
+ggplot(data = diamonds, aes(x = price)) +
+  geom_histogram(aes(fill = color), bins = 30, color = "black", position = "fill") 
+```
+
+
+2. Please use `geom_histogram()` to investigate the relationship between `price` and `clarity`.
+
+
+```{r}
+ggplot(data = diamonds, aes(x = price)) +
+  geom_histogram(aes(fill = clarity), bins = 30, color = "black")  #have black lines around each bar
+ggplot(data = diamonds, aes(x = price)) +
+  geom_histogram(aes(fill = clarity), bins = 30, color = "black", position = "fill") 
+```
+
+3. Please use `geom_histogram()` to investigate the relationship between `Sepal.Length` and `Species` in `iris` data set.
+
+```{r}
+ggplot(data = iris, aes(x = Sepal.Length)) +
+  geom_histogram(aes(fill = Species), bins = 20, color = "black")  #have black lines around each bar
+ggplot(data = iris, aes(x = Sepal.Length)) +
+  geom_histogram(aes(fill = Species), bins = 20, color = "black", position = "fill") 
+```
+
+
+
+4. Please use `geom_histogram()` to investigate the relationship between `Petal.Length` and `Species` in `iris` data set.
+
+```{r}
+ggplot(data = iris, aes(x = Petal.Length)) +
+  geom_histogram(aes(fill = Species), bins = 20, color = "black")  #have black lines around each bar
+ggplot(data = iris, aes(x = Petal.Length)) +
+  geom_histogram(aes(fill = Species), bins = 20, color = "black", position = "fill") 
+```
+
+
+#### In-class Exercise: Investigate A Categorical and A Continuous Variable by `geom_boxplot`
+
+1. Please use `geom_boxplot()` to investigate the relationship between `price` and `color`. You can choose to flip the boxplot or not.
+
+```{r boxplotdiamond}
+ggplot(data = diamonds) +
+  geom_boxplot( mapping = aes(x = color, y = price))
+ggplot(data = diamonds) +
+  geom_boxplot(mapping = aes(x = reorder(color, price, FUN = median), y = price))
+```
+
+2. Please use `geom_boxplot()` to investigate the relationship between `Sepal.Length` and `Species` in the `iris` data set. You can choose to flip the boxplot or not.
+
+```{r boxplotiris}
+ggplot(data = iris) +
+  geom_boxplot( mapping = aes(x = Species, y = Sepal.Length))
+ggplot(data = iris) +
+  geom_boxplot( mapping = aes(x = Species, y = Petal.Length))
+
+```
+
+#### In-class Exercise: Two Continuous Variables by `geom_point()`
+
+1. Please use `geom_point()` to investigate the relationship between `depth` and `price`.
+
+```{r}
+ggplot(data = diamonds) +
+  geom_point(mapping = aes(x = depth, y = price))
+```
+
+
+2. Please use `geom_point()` to investigate the relationship between `Petal.Length` and `Petal.Width` with `Species` in `iris` dataset.
+
+```{r irispoint}
+ggplot(data = iris) +
+  geom_point(mapping = aes(x = Petal.Length, y = Petal.Width,colour = Species))
+
+```
+
+#### In-class Exercise: Two Continuous Variables by `geom_boxplot()`
+1. Please use `geom_boxplot()` to investigate the relationship between `depth` and `price`. How to choose the width?
+
+```{r}
+ggplot(data = diamonds, mapping = aes(x = depth, y = price)) +
+  geom_boxplot(mapping = aes(group = cut_width(depth, 0.5)))
+ggplot(data = diamonds, mapping = aes(x = price, y = depth)) +
+  geom_boxplot(mapping = aes(group = cut_width(price, 500)))
+```
+
+
+2. Please use `geom_boxplot()` to investigate the relationship between `Sepal.Length` and `Sepal.Width`. How to choose the width?
+
+```{r}
+ggplot(data = iris, mapping = aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_boxplot(mapping = aes(group = cut_width(Sepal.Length, 0.2)))
+```
+

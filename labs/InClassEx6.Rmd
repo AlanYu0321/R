@@ -1,0 +1,146 @@
+---
+title: "In Class Exercise 6"
+author: "Tsu-Hao, Yu"
+date: "2025-02-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### In-class Exercise: CI on mean
+
+A manufacturer of sports equipment has developed a new synthetic fishing line with a standard
+deviation of 0.5 kilogram. If a random sample of 50 lines is tested and found
+to have a mean breaking strength of 7.8 kilograms, can you construct a $99\%$ confidence interval.
+
+Here
+\[\sigma = 0.5, \qquad n = 50, \qquad \bar{x} = 7.8, \qquad \alpha = 0.01.\]
+
+```{r}
+n <- 50 #sample size
+xbar <- 7.8  #sample mean
+sigma <- 0.5  #population sd
+alpha <- 0.01
+#Left endpoint for confidence 99%
+lend <- xbar - sigma/sqrt(n)*qnorm(1-alpha/2)
+#Right endpoint for confidence 99%
+rend <- xbar + sigma/sqrt(n)*qnorm(1-alpha/2)
+```
+
+The $99\%$ confidence interval is (`r lend`, `r rend`). 
+
+#### In-class Exercise: CI on $\mu$ with unknown variance
+
+1. Regular consumption of presweetened cereals contributes to tooth decay, heart disease,
+and other degenerative diseases, according to studies conducted by Dr. W. H. Bowen
+of the National Institute of Health and Dr. J. Yudben, Professor of Nutrition and
+Dietetics at the University of London. In a random sample consisting of 20 similar
+single servings of Alpha-Bits, the average sugar content was 11.3 grams with a standard
+deviation of 2.45 grams. Assuming that the sugar contents are normally distributed,
+construct a 95% confidence interval for the mean sugar content for single servings of
+Alpha-Bits.
+
+Here
+\[n = 20, \qquad \bar{x} = 11.3, \qquad s = 2.45, \qquad \alpha = 0.05.\]
+
+
+
+```{r}
+xbar <- 11.3
+s <-2.45
+n <- 20
+alpha <- 0.05
+tcritical<- qt(1-alpha/2,n-1)
+lowerBound <- xbar-tcritical*s/sqrt(n)
+lowerBound
+upperBound <- xbar+tcritical*s/sqrt(n)
+upperBound
+```
+
+
+2. Please construct a 95% confidence interval for the mean of `Sepal.Length` in the `iris` data set, assume the normal distribution.
+
+Method I:
+
+```{r}
+sepalLength<- iris$Sepal.Length
+xbar <- mean(sepalLength)
+s <-sd(sepalLength)
+n <- length(sepalLength)
+alpha <- 0.05
+tcritical<- qt(1-alpha/2,n-1)
+lowerBound <- xbar-tcritical*s/sqrt(n)
+lowerBound
+upperBound <- xbar+tcritical*s/sqrt(n)
+upperBound
+```
+
+t-test
+
+```{r}
+t.test(sepalLength)
+```
+
+#### In-class Exercise: CI on $\mu_1-\mu_2$ with known $\sigma_1$ and $\sigma_2$
+
+1. Generate 50 normal random numbers with $\mu_1 = 3$ and $\sigma_1 = 3$ and get the sample mean $\bar{x}_1$.
+Hint: `rnorm`
+
+```{r}
+n1<-50
+x1<-rnorm(n1,mean = 3,sd = 3)
+x1bar<-mean(x1)
+x1bar
+```
+
+
+2. Generate 75 normal random numbers with $\mu_2 = 2$ and $\sigma_2 = 4$ and get the sample mean $\bar{x}_2$
+
+```{r}
+n2<-75
+x2<-rnorm(n2,mean = 2,sd = 4)
+x2bar<-mean(x2)
+x2bar
+```
+
+
+3. Please construct a 95% confidence interval on $\mu_1-\mu_2$.
+
+```{r}
+alpha<-0.05
+sigma1 <- 2
+sigma2 <- 4
+standerror <- sqrt(sigma1^2 /n1 + sigma2^2/n2)
+lowerBound <- x1bar-x2bar - qnorm(1-alpha/2)*standerror
+lowerBound
+upperBound <- x1bar-x2bar + qnorm(1-alpha/2)*standerror
+upperBound
+```
+
+
+
+#### In-class Exercise A: CI on $\mu_1-\mu_2$ with unknown $\sigma_1 = \sigma_2$
+
+Let's play with `iris` data set. We want to compare the population mean of `Sepal.Length` between `Setosa` and `Virginica`. Suppose we know these two species come from the normal distribution with the same variance. Can you construct a confidence interval on $\mu_{virginica}-\mu_{setosa}$ with 95% confidence?
+
+```{r}
+irisTwoSpeices<-subset(iris,Species %in% c("virginica", "setosa"))
+t.test(Sepal.Length~Species,data = irisTwoSpeices,var.equal = TRUE)
+setosaSepal<-iris$Sepal.Length[iris$Species == "setosa"]
+virginicaSepal<-iris$Sepal.Length[iris$Species == "virginica"]
+t.test(virginicaSepal,setosaSepal,var.equal = TRUE)
+```
+
+
+#### In-class Exercise B: CI on $\mu_1-\mu_2$ with unknown $\sigma_1 \ne \sigma_2$
+
+Let's play with `iris` data set. We want to compare the population mean of `Sepal.Length` between `Setosa` and `Virginica`. Suppose we know these two species come from the normal distribution with different variances. Can you construct a confidence interval on $\mu_{virginica}-\mu_{setosa}$ with 95% confidence?
+
+```{r}
+t.test(Sepal.Length~Species,data = irisTwoSpeices)
+t.test(virginicaSepal,setosaSepal,var.equal = TRUE)
+```
+
+

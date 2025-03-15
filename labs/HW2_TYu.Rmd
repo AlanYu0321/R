@@ -1,0 +1,165 @@
+---
+author: "Tsu-Hao, Yu"
+date: 'Due Date 2/26'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r message=FALSE}
+# Import needed packages
+library(tigerstats)
+library(ggplot2)
+```
+
+
+
+## Part I. Changing the author field and file name.
+
+#### (a) Change the `author:` field on the Rmd document 
+
+#### (b) Rename this file to "HW2_YourFirstInitialYourLastName.Rmd", (e.g. HW2_YDing.Rmd).
+
+<br>
+
+## Part II. Working With Data (100 points)
+
+In this part, we work on the cyber security breach report data downloaded 2015-02-26 from the US Health and Human Services. 
+
+To understand what the data represents, here is some information from the *Office for Civil Rights* of the  *U.S. Department of Health and Human Services*: 
+
+* "As required by section 13402(e)(4) of the HITECH Act, the Secretary must post a list of breaches of unsecured protected health information affecting 500 or more individuals. 
+* "Since October 2009 organizations in the U.S. that store data on human health are required to report any incident that compromises the confidentiality of 500 or more patients / human subjects (45 C.F.R. 164.408). These reports are publicly available. Our data  set  was downloaded from the Office for Civil Rights of the U.S. Department of Health and Human Services, 2015-02-26."  
+
+Load this data set and save it as `cyberData`,  using the following code: 
+
+```{r}
+cyberData<-read.csv(url("https://vincentarelbundock.github.io/Rdatasets/csv/Ecdat/HHSCyberSecurityBreaches.csv"))
+```
+
+### Question 1. Data Exploration
+
+#### (a) Check the structure of the data using the `str` command. What type of object is `cyberData`?  How many observations are recorded? How  many variables are recorded?List all  of  the types of  variables that are  recorded based on the output (i.e. int/float etc.). (10 points) 
+
+```{r}
+str(cyberData)
+```
+
+> *[The data set is stored as a data.frame with 1151 rows and 10 columns. There are  1151 observations of 10 variables.  All  of  the types of variables are int/chr/logi.]* 
+
+#### (b) Use a `qqplot` to check if `Individuals.Affected` follows a normal distributionn or not. (10 points)
+
+**Hint**: You can use `qqPlot` in `car` package or `qqnorm`, `qqline`.
+
+```{r}
+# Load necessary package
+library(car)
+
+# Generate a QQ plot using the car package
+qqPlot(cyberData$Individuals.Affected, main = "qqPlot for Individuals.Affected")
+```
+
+> No, it's not a normal distributionn. It’like right-skewed, with many small values and a few very large ones.
+  
+#### (c) Please use function `table` to find the frequency of the records for each `State`. (5 points)
+
+```{r}
+# Show the frequency of each state.
+table(cyberData$State)
+# Find how many distinct value in cyberData$State
+n_distinct(cyberData$State)
+```
+
+
+#### (d) What are all the different values of `Type.Of.Breach` reported in the data set? How many are hacking/IT incidents? (10 points)
+
+```{r}
+# Total different type.
+table(unlist(strsplit(c(cyberData$Type.of.Breach), ', ')))
+# Total different of different combinations
+table(cyberData$Type.of.Breach)
+n_distinct(cyberData$Type.of.Breach)
+```
+
+> 1.There are 7 different Type and one Unauthorized Access/Disclosure with exta space so it shows 8 different type.<br>
+2.There are 77 Hacking/IT Incident and 17 Hacking/IT Incident with other type of breach, total 94 Hacking/IT Incident relative.
+
+#### (e) What type of breach is reported in the 748th row of `cyberData`?  How about 349th row? Was row 349 counted in the proportion of Hacking/IT incident breaches you computed above? Why or why not?  (10 points)
+
+```{r} 
+# show the value of vector
+questionE <- c(cyberData$Type.of.Breach[748], cyberData$Type.of.Breach[349])
+questionE
+# Split the combinations type to induvidual type.
+questionE <- strsplit(questionE, ', ')
+table(unlist(questionE))
+```
+
+> 748th type: Loss, Theft <br>
+394th type: Hacking/IT Incident, Unauthorized Access/Disclosure <br>
+Yes, it include in my counted above, because I already consider the multiple type of breach situation.
+
+#### (f) Please find the correct way to get the number of hacking/IT incidents  (10 points)
+
+```{r}
+# Get how many incident that are relative to Hacking/IT Incident.
+sum(grepl("Hacking/IT Incident", cyberData$Type.of.Breach))
+```
+
+### Question 2. Generate a small data frame and play with it.
+
+#### (a) Please select the records in three states, `California` (State=="CA"), `Illinois` (State == "IL"), and `Florida` (State == "FL"), save as a new data frame with the name `threestates`, and show a summary of `threestates`. (10 points)
+
+**Hint**: You can use `subset` function.
+
+```{r}
+# Using subset function to get the data of State "CA", "IL" and "FL"
+threestates <- subset(cyberData, State %in% c("CA", "IL", "FL"))
+summary(threestates)
+```
+
+
+
+#### (b) Use `barplot` to investigate `State` attribute in `threestates`. Show your result. (5 points)
+
+```{r}
+barplot(table(threestates$State))
+```
+
+
+
+#### (c) Show an overlay histogram of `Individuals.Affected` with `State`. What conclusion can you draw from the plot? (10 points)
+
+
+```{r}
+ggplot(threestates, aes(x = Individuals.Affected)) +
+geom_histogram(aes(fill = State), bins=10) + scale_x_continuous(labels = scales::comma)
+```
+
+> A large concentration are at 0 - 250,000, Approximately 120 incidents for CA, 60 incidents for FL and 50 incidents for IL. A few incident spread out aling higher number, IL reaching up to around 4 million individuals.
+
+#### (d) Show an overlay boxplot of `Individuals.Affected` with `State`. What conclusion can you draw from the plot? (10 points)
+
+
+```{r}
+ggplot(threestates, aes(x = State, y = Individuals.Affected)) +
+geom_boxplot() + scale_y_continuous(labels = scales::comma)
+```
+
+> CA highest outlier is around 0.8 million individuals, FL highest outlier is around 1.2 million individuals and IL highest outlier is around 4 million individuals. CA individuals affected number are more concentrate compares to the other state.
+
+
+#### (e)  How to Zoom in to see the boxplot clearly in (d)? What conclusion can you draw from the plot? (10 points)
+**Hint**: You can play with the y-axis limit.
+
+```{r}
+ggplot(threestates, aes(x = State, y = Individuals.Affected)) +
+geom_boxplot() +
+ylim(0, 10000)
+```
+
+> To see the boxplot clearly I limited y-axis to 10,000.<br>
+IL has the lowest median around 1,200, CA comes second around 1,400 and FL has the highest median around 1,600. Three states Q1 are more concentrate than Q3 and IL's maximun are the lowest.

@@ -1,0 +1,92 @@
+---
+title: "In Class Exercise 5"
+author: "Tsu-Hao, Yu"
+date: "2025-02-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r,message=FALSE}
+library(tigerstats)
+```
+
+#### In-class Exercise: Sample Mean Distribution
+
+A maker of a certain brand of low-fat cereal bars claims that the average saturated fat content is 0.5 gram and standard deviation is 0.1. In a random sample of 35 cereal bars of this brand, the sample mean is 0.6.
+		
+a) What is the probability to get the sample mean larger than or equal to 0.6? 
+
+```{r}
+nsize<- 35 # Sample Size
+std <- 0.1
+mu <- 0.5 # Mean of Sample Mean
+standardDev <- std/sqrt(nsize) # Sd of Sample Mean
+p1<- pnormGC(0.6, region = "above", mean = mu, sd = standardDev, graph = TRUE)
+```
+
+
+b) What is the probability to get the sample mean less than or equal to 0.45?
+
+```{r}
+p1<- pnormGC(0.45, region = "below", mean = mu, sd = standardDev, graph = TRUE)
+```
+
+#### In-class Exercise: Difference between Two Means
+
+Two different box-filling machines are used to fill cereal boxes on an assembly line. The critical measurement influenced by these machines is the weight of the product in the boxes. Engineers are quite certain that
+		the variance of the weight of product is $\sigma^2  = 1$ ounce.
+		Experiments are conducted using both machines with
+		sample sizes of 36 each. The sample averages for machines
+		$A$ and $B$ are $\bar{x}_A = 4.5$ ounces and $\bar{x}_B = 4.7$
+		ounces. Engineers are surprised that the two sample
+		averages for the filling machines are so different.
+		
+(a) Use the Central Limit Theorem to determine
+			\[P(\bar{X}_B-\bar{X}_A \ge 0.2)\]
+			under the condition that $\mu_A = \mu_B$.
+			
+```{r}
+xbarA <- 4.5
+xbarB <- 4.7
+n <- 36
+sigma <-1
+p<- pnormGC(xbarB-xbarA, region = "above", mean = 0, sd =sqrt(2*sigma^2/n), graph = TRUE)
+```
+	
+
+(b) Do the aforementioned experiments seem to, in any
+			way, strongly support a conjecture that the population
+			means for the two machines are different?
+			Explain using your answer in a.
+
+> No. As the probaiblity is greater than 0.05. It is likely to get the difference greater than 0.2 even though the two machines with the same mean.
+
+
+#### In-class Exercise: $t$ Distribution
+
+A manufacturing firm claims that the batteries used in their electronic games will last an average of 30 hours. To maintain this average, 16 batteries are tested each month. If the computed t-value falls between $-t_{0.025}$ and $t_{0.025}$, the firm is satisfied with its
+claim. What conclusion should the firm draw from a sample that has a mean of $\bar{x}= 27.5$ hours and a standard deviation of $s = 5$ hours? Assume the distribution of battery lives to be approximately normal.
+
+*Answer*: We know $\mu = 30, \bar{x}=27.5, s = 5, n = 16$. Thus $v = n-1=15$. Then
+
+```{r,out.width = "50%",out.height = "50%"}
+xbar<-27.5
+mu <-30
+s <- 5
+n <- 16
+tstatistics <- (xbar-mu)/(5/sqrt(n))
+tstatistics
+# To get t_{0.025} with v = n-1
+alpha <- 0.025
+v <-n-1
+tvalue <- qt(1 - alpha, v)
+tvalue
+# Or we can get -t_{0.025} with v = n-1 first
+tnegvalue <- qt(alpha, v)
+tnegvalue
+p <- ptGC(c(tnegvalue,tvalue),df = v, region = "between", graph = TRUE)
+```
